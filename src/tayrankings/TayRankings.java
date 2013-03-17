@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -26,6 +27,9 @@ public static int count = 0;
      */
 
      private static ItunesEntry[] song;
+     private static final Object[] options = {"Song 1",
+                                                "Song 2",
+                                                "Quit!"};
      private static String itunesHeader;
      private static int index = 0;
 
@@ -69,6 +73,7 @@ public static int count = 0;
     static ItunesEntry TaylorCompare(ItunesEntry a, ItunesEntry b)
     {
         int input;
+        String songList = "1. " + a.getReadableLine() + "\n2. " + b.getReadableLine();
         count++;
         
         if(a.getWholeLine().isEmpty())
@@ -90,32 +95,35 @@ public static int count = 0;
         System.out.println("2. " + b.getReadableLine());
 
         //get input
-        input = ReadInt();
-        
-        for(int i=0; i<50; i++)
-        {
-            System.out.println(" ");
-        }
-        
-        if(input == 1)
+        //input = ReadInt();
+
+        input = JOptionPane.showOptionDialog(null,
+            "Which song is better?\n" + songList,
+            "Playlist Sort",
+            JOptionPane.YES_NO_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            options,
+            options[0]);
+
+        if(input == 0)
         {
             return a;
         }
-        else if(input == 2)
+        else if(input == 1)
         {
             return b;
+        }
+        else if(input == 2 || input == -1)
+        {
+            System.exit(0);
+            return a;
         }
         else
         {
             return TaylorCompare(a, b);
         }
         
-    }
-    
-    private static int ReadInt()
-    {
-        Scanner s = new Scanner(System.in);
-        return s.nextInt();
     }
     
     static void FileDump(File f, ItunesEntry[] lines)

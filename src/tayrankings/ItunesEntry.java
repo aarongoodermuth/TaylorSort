@@ -38,6 +38,6 @@ public class ItunesEntry
             return " ";
         }
         
-        return intermediate[0] + "\t\t" + intermediate[3];
+        return intermediate[0] + "  (" + intermediate[3] + ")";
     }
 }
