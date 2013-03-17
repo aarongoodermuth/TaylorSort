@@ -26,6 +26,7 @@ public static int count = 0;
      */
 
      private static ItunesEntry[] song;
+     private static String itunesHeader;
      private static int index = 0;
 
     public static void main(String[] args)
@@ -41,11 +42,15 @@ public static int count = 0;
         
         //get lines of file
         lines = TaylorRead(jfc.getSelectedFile().getAbsolutePath());
+        lines = ItunesCompatabilityIssues(lines);
+        
+        song = new ItunesEntry[lines.length - 1];
+        itunesHeader = lines[0];
         
         //get just song name and albumn
-        for(String cur : lines)
+        for(int i=1; i<lines.length; i++)
         {
-            song[index++] = new ItunesEntry(cur);
+            song[index++] = new ItunesEntry(lines[i]);
         }
         
         //sort
@@ -65,6 +70,19 @@ public static int count = 0;
     {
         int input;
         count++;
+        
+        if(a.getWholeLine().isEmpty())
+        {
+            return b;
+        }
+        else
+        {
+            if(b.getWholeLine().isEmpty())
+            {
+                return a;
+            }
+        }
+        
         System.out.println("Count: " + count);
         System.out.println(" ");
         System.out.println("1. " + a.getReadableLine());
@@ -102,7 +120,7 @@ public static int count = 0;
     
     static void FileDump(File f, ItunesEntry[] lines)
     {
-        String toWrite = "";
+        String toWrite = itunesHeader;
         
         for(ItunesEntry cur : lines)
         {
@@ -221,5 +239,30 @@ public static int count = 0;
             read = in.read(buffer);
         } while (read >= 0);
         return contents.toString();
-    }            
+    }  
+    
+    private static String[] ItunesCompatabilityIssues(String[] in)
+    {
+        //String out;
+        
+        for(int i=0; i<in.length; i++)
+        {
+            StringBuilder temp = new StringBuilder();
+            int index = 0;
+            for(int j=0; j<in[i].length(); j++)
+            {
+                if( ((int)in[i].charAt(j)) > 0  && ((int)in[i].charAt(j)) < 65533)
+                {
+                    temp.append( in[i].charAt(j) );
+                }
+                
+                //System.out.println((int)in[i].charAt(j));
+            }
+            
+            in[i] = temp.toString();
+        
+        }
+        
+        return in;
+    }
 }
